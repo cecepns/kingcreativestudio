@@ -193,7 +193,7 @@ function App() {
             <div>
               <p className="badge mb-3">Our Clients</p>
               <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-                Klien yang sudah mempercayakan tampilan digitalnya.
+                Klien yang sudah mempercayakan bisnis digitalnya.
               </h2>
               <p className="mt-2 max-w-xl text-base text-slate-600">
                 Logo-logo di bawah mewakili berbagai brand dan pelaku UMKM yang
