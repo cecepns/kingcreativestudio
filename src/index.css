@@ -40,29 +40,6 @@
     @apply inline-flex items-center gap-1 rounded-full bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600;
   }
 
-  .marquee-track {
-    @apply flex items-center gap-8 sm:gap-12;
-    animation: marquee 12s linear infinite;
-  }
-
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-}
-
-@media (min-width: 640px) {
-  .marquee-track {
-    animation-duration: 18s;
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
 }
 
 

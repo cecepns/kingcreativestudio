@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Marquee from "react-fast-marquee";
 import {
   ArrowRight,
   ChevronDown,
@@ -10,6 +11,7 @@ import {
   Rocket,
   Sparkles,
   CheckCircle2,
+  Phone,
 } from "lucide-react";
 import logo from "./assets/logo.png";
 import heroImage from "./assets/hero-image.png";
@@ -63,12 +65,6 @@ const clients = Object.entries(clientLogoModules).map(([path, src]) => {
   return { name, src };
 });
 
-const highlights = [
-  "Fokus pada UMKM Indonesia",
-  "Gratis konsultasi dan brainstorming awal",
-  "Pendampingan setelah project selesai",
-];
-
 function App() {
   useEffect(() => {
     AOS.init({
@@ -78,11 +74,6 @@ function App() {
       offset: 80,
     });
   }, []);
-
-  const duplicatedClients = useMemo(
-    () => (clients.length ? [...clients, ...clients] : []),
-    [],
-  );
 
   return (
     <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
@@ -217,7 +208,7 @@ function App() {
             </div>
 
             <div className="mt-4 space-y-4">
-              {duplicatedClients.length === 0 ? (
+              {clients.length === 0 ? (
                 <p className="text-sm text-slate-500">
                   Belum ada file logo di folder{" "}
                   <strong>src/assets/clients</strong>. Tambahkan logo-logo hitam
@@ -226,11 +217,16 @@ function App() {
                 </p>
               ) : (
                 <div className="relative">
-                  <div className="marquee-track">
-                    {duplicatedClients.map((client, index) => (
+                  <Marquee
+                    gradient={false}
+                    pauseOnHover
+                    speed={30}
+                    className="flex items-center"
+                  >
+                    {clients.map((client) => (
                       <div
-                        key={`${client.name}-${index}`}
-                        className="group flex h-20 min-w-[180px] items-center justify-center grayscale transition duration-300 hover:grayscale-0 sm:h-24 sm:min-w-[220px]"
+                        key={client.name}
+                        className="group mx-4 flex h-16 min-w-[120px] items-center justify-center grayscale transition duration-300 hover:grayscale-0 sm:h-20 sm:min-w-[160px] lg:h-24 lg:min-w-[200px]"
                       >
                         <img
                           src={client.src}
@@ -239,7 +235,7 @@ function App() {
                         />
                       </div>
                     ))}
-                  </div>
+                  </Marquee>
                 </div>
               )}
             </div>
@@ -437,6 +433,22 @@ function App() {
           </div>
         </section>
       </main>
+
+      {/* Floating WhatsApp Chat Button */}
+      <a
+        href="https://wa.me/6282214094779"
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6"
+        aria-label="Chat via WhatsApp"
+      >
+        <div className="relative">
+          <span className="absolute inline-flex h-12 w-12 animate-ping rounded-full bg-emerald-400 opacity-60" />
+          <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/50">
+            <Phone className="h-5 w-5" />
+          </span>
+        </div>
+      </a>
 
       <footer className="border-t border-slate-200 bg-white py-6 text-xs text-slate-500">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-0">
