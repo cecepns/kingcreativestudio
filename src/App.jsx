@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Marquee from "react-fast-marquee";
@@ -23,7 +23,8 @@ const services = [
     title: "Toko Online",
     description:
       "Toko online profesional dengan katalog produk, pembayaran online, dan manajemen pesanan yang rapi.",
-    // priceLabel: "Mulai dari Rp 600.000",
+    priceLabel: "Mulai dari Rp 600.000",
+    priceValue: 600000,
     icon: ShoppingBag,
     tags: ["Catalog", "Payment gateway", "Responsive"],
   },
@@ -32,7 +33,8 @@ const services = [
     title: "Mobile App",
     description:
       "Aplikasi mobile custom untuk Android & iOS agar bisnis Anda selalu ada di genggaman pelanggan.",
-    // priceLabel: "Mulai dari Rp 800.000",
+    priceLabel: "Mulai dari Rp 800.000",
+    priceValue: 800000,
     icon: Smartphone,
     tags: ["Android & iOS", "Push notification", "Custom fitur"],
   },
@@ -41,7 +43,8 @@ const services = [
     title: "Custom Website",
     description:
       "Website company profile, landing page campaign, hingga sistem internal yang disesuaikan dengan kebutuhan.",
-    // priceLabel: "Mulai dari Rp 300.000",
+    priceLabel: "Tanya harga",
+    priceValue: null,
     icon: Code2,
     tags: ["Desain clean", "SEO ready", "Fast loading"],
   },
@@ -74,6 +77,48 @@ function App() {
       offset: 80,
     });
   }, []);
+
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutService, setCheckoutService] = useState(null);
+  const [checkoutForm, setCheckoutForm] = useState({
+    name: "",
+    business: "",
+    notes: "",
+  });
+
+  const handleOpenCheckout = (service) => {
+    setCheckoutService(service);
+    setIsCheckoutOpen(true);
+  };
+
+  const handleCloseCheckout = () => {
+    setIsCheckoutOpen(false);
+  };
+
+  const handleChangeCheckoutField = (field, value) => {
+    setCheckoutForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmitCheckout = (event) => {
+    event.preventDefault();
+    if (!checkoutService) return;
+
+    const baseUrl = "https://wa.me/6282214094779";
+    const lines = [
+      "Halo Kingcreativestudio, saya ingin konsultasi paket:",
+      `Paket: ${checkoutService.title}`,
+      checkoutService.priceValue
+        ? `Perkiraan harga: Rp ${checkoutService.priceValue.toLocaleString("id-ID")}`
+        : "Perkiraan harga: (custom, mohon dibantu estimasinya)",
+      checkoutForm.name ? `Nama: ${checkoutForm.name}` : "",
+      checkoutForm.business ? `Jenis bisnis: ${checkoutForm.business}` : "",
+      checkoutForm.notes ? `Catatan tambahan: ${checkoutForm.notes}` : "",
+    ].filter(Boolean);
+
+    const text = encodeURIComponent(lines.join("\n"));
+    window.open(`${baseUrl}?text=${text}`, "_blank");
+    setIsCheckoutOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
@@ -174,6 +219,95 @@ function App() {
             </div>
           </div>
         </section>
+
+      {/* Checkout Modal */}
+      {isCheckoutOpen && checkoutService && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 px-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+            <button
+              type="button"
+              onClick={handleCloseCheckout}
+              className="absolute right-4 top-4 rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-500 hover:bg-slate-200"
+            >
+              Tutup
+            </button>
+
+            <div className="mb-4">
+              <p className="badge mb-2">Form Checkout</p>
+              <h3 className="text-lg font-semibold text-slate-900">
+                {checkoutService.title}
+              </h3>
+              <p className="mt-1 text-sm text-slate-600">
+                {checkoutService.priceLabel
+                  ? `Harga: ${checkoutService.priceLabel}`
+                  : "Harga akan disesuaikan setelah konsultasi."}
+              </p>
+            </div>
+
+            <form className="space-y-3" onSubmit={handleSubmitCheckout}>
+              <div>
+                <label className="block text-xs font-medium text-slate-600">
+                  Nama Anda
+                </label>
+                <input
+                  type="text"
+                  className="mt-1 w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  placeholder="Contoh: Budi"
+                  value={checkoutForm.name}
+                  onChange={(e) =>
+                    handleChangeCheckoutField("name", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-600">
+                  Jenis bisnis
+                </label>
+                <input
+                  type="text"
+                  className="mt-1 w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  placeholder="Contoh: Toko fashion, kuliner, jasa, dll."
+                  value={checkoutForm.business}
+                  onChange={(e) =>
+                    handleChangeCheckoutField("business", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-600">
+                  Catatan tambahan (opsional)
+                </label>
+                <textarea
+                  className="mt-1 w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  rows={3}
+                  placeholder="Ceritakan kebutuhan atau referensi website/aplikasi yang Anda inginkan."
+                  value={checkoutForm.notes}
+                  onChange={(e) =>
+                    handleChangeCheckoutField("notes", e.target.value)
+                  }
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:brightness-110"
+              >
+                Kirim ke WhatsApp
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+
+              <p className="mt-1 text-center text-[11px] text-slate-500">
+                Setelah klik tombol di atas, Anda akan diarahkan ke WhatsApp
+                dengan pesan yang sudah terisi otomatis.
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
 
         {/* Our Clients */}
         <section className="pt-4" id="clients">
@@ -323,15 +457,14 @@ function App() {
                     ))}
                   </div>
 
-                  <a
-                    href="https://wa.me/6282214094779"
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => handleOpenCheckout(service)}
                     className="mt-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
                   >
-                    Konsultasi paket via WhatsApp
+                    Checkout paket ini
                     <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
+                  </button>
                 </article>
               );
             })}
