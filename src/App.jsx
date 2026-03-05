@@ -21,7 +21,7 @@ import pricingImage from "./assets/pricing-image.png";
 const services = [
   {
     id: "online-store",
-    title: "Toko Online",
+    title: "Website Toko Online",
     description:
       "Toko online profesional dengan katalog produk, pembayaran online, dan manajemen pesanan yang rapi.",
     priceLabel: "Mulai dari Rp 600.000",
