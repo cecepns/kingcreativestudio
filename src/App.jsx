@@ -130,7 +130,7 @@ function App() {
             <img
               src={logo}
               alt="Kingcreativestudio logo"
-              className="h-14 w-auto"
+              className="h-14 w-auto mr-2"
             />
             <div>
               <p className="text-base font-semibold tracking-tight">
